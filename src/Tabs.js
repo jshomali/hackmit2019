@@ -8,6 +8,7 @@ class TabsComp extends Component {
     super();
     this.state = { tabIndex: 0 };
   }
+  
   handleSubmit(e){
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -29,11 +30,12 @@ class TabsComp extends Component {
             alert("Message failed to send.")
         }
     })
-}
+  }
 
-resetForm(){
-    document.getElementById('contact-form').reset();
-}
+  resetForm(){
+      document.getElementById('contact-form').reset();
+  }
+
   render() {
     return (
       <Tabs selectedIndex={this.state.tabIndex} onSelect={tabIndex => this.setState({ tabIndex })}>
