@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 
-import Home from './Home';
+// import Home from './Home';
 import TabsComp from './Tabs';
 
 

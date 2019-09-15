@@ -5,6 +5,8 @@ import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
 import DateTimePicker from 'react-datetime-picker';
 
+import firestore from "./Firestore"
+
 class Content1 extends Component {
   constructor(props) {
     super(props);
@@ -16,22 +18,15 @@ class Content1 extends Component {
   }
 
   fetchNonProfits() {
-    const admin = require('firebase-admin');
-
-    let serviceAccount = require('./hackmit2019-46f4a5a0417f.json');
-
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
-
-    let db = admin.firestore();
+    let db = firestore.firestore();
 
     // Fetch non-profits
     db.collection('non-profits').get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
+          console.log(doc.id, '=>', doc.data()["location"]);
           this.setState({
-            non_profit_array : this.state.non_profit_array.concat(doc.data)
+            non_profit_array : this.state.non_profit_array.concat(doc.data())
           })
         });
       })
@@ -42,11 +37,12 @@ class Content1 extends Component {
   }
 
   render() {
+    console.log(this.state.non_profit_array.length)
     return <div>
-      this is Content1
       {this.state.non_profit_array.map(npo => (
-        <div>
-          
+        <div key={npo.title}>
+          <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
+          <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
         </div>
       ))}
     </div>
@@ -92,19 +88,19 @@ class Content2 extends Component {
           <br></br>
           <form id="contact-form" onSubmit={this.handleSubmit.bind(this)} method="POST">
             <div className="form-group">
-                <label for="name" style={{color: 'white'}}>Event Title</label>
+                <label htmlFor="name" style={{color: 'white'}}>Event Title</label>
                 <br></br>
                 <input type="text" className="form-control" id="name" />
             </div>
             <br></br>
             <div className="form-group">
-                <label for="exampleInputEmail1" style={{color: 'white'}}>Description</label>
+                <label htmlFor="exampleInputEmail1" style={{color: 'white'}}>Description</label>
                 <br></br>
                 <textarea className="form-control" rows="6" id="message"></textarea>
             </div>
             <br></br>
             <div className="form-group">
-                <label for="message" style={{color: 'white'}}>Date & Time</label>
+                <label htmlFor="message" style={{color: 'white'}}>Date & Time</label>
                 <br></br>
                 <DateTimePicker onChange={this.onChange} value={this.state.date} />
             </div>
@@ -126,7 +122,7 @@ render() {
 	       activeTabStyle={{ background:  'red', color:  'white' }}
 	       unActiveTabStyle={{ background:  'green', color:  'black' }}
 	       activeLeftTabBorderBottomStyle={{ background:  'blue', height:  4 }}
-	       activeRightTabBorderBottomStyle={{ background:  'yellow', height:  4 }}
+	       activeRightTabBorderBottomStyle={{ background:  'blue', height:  4 }}
 	       tabsBorderBottomStyle={{ background:  'orange', height:  4 }}
 	       leftContentStyle={{ background:  'lightgreen' }}
 	       rightContentStyle={{ background:  'lightblue' }}
