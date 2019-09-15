@@ -162,33 +162,40 @@ class FacebookLogin extends Component {
 
 class Login extends Component {
   state = {
-    user: null
+    user: null,
+    loggedIn: false
   }
 
   login = () => {
     auth().signInWithPopup(provider)
       .then(({ user }) => {
-        this.setState({ user })
+        this.setState({ user, loggedIn: true })
       })
   }
 
   logout = () => {
     auth().signOut().then(() => {
-      this.setState({user: null})
+      this.setState({user: null, loggedIn: false})
     })
   }
 
   render() {
-    const { user } = this.state
+    const { user } = this.state;
+
+    let logButton = 4;
+
+    if (this.state.loggedIn) {
+      logButton = <button onClick={this.logout}>Logout</button>
+    } else {
+      logButton = <button onClick={this.login}>Login with Facebook</button>
+    }
+
      return (
        <div className='app'>
         <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
-        <button onClick={this.login}>
-          Login with Facebook
-        </button>
-        <button onClick={this.logout}>
-          Logout
-        </button>
+
+        {logButton}
+
       </div>
       );
     }
