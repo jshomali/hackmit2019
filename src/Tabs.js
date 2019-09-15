@@ -121,9 +121,8 @@ render() {
          <Tab>NPOs</Tab>
          <Tab>Events</Tab>
        </TabList>
-        <Content1/>
        <TabPanel>
-
+        <Content1/>
        </TabPanel>
        <TabPanel>
         <Content2/>
