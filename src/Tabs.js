@@ -1,14 +1,54 @@
 import React, {Component} from 'react';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
 import DateTimePicker from 'react-datetime-picker';
 
 class Content1 extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { non_profit_array: [] };
+  }
+
+  componentDidMount() {
+    this.fetchNonProfits()
+  }
+
+  fetchNonProfits() {
+    const admin = require('firebase-admin');
+
+    let serviceAccount = require('./hackmit2019-46f4a5a0417f.json');
+
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+
+    let db = admin.firestore();
+
+    // Fetch non-profits
+    db.collection('non-profits').get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+          this.setState({
+            non_profit_array : this.state.non_profit_array.concat(doc.data)
+          })
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+
+  }
+
   render() {
     return <div>
       this is Content1
+      {this.state.non_profit_array.map(npo => (
+        <div>
+          
+        </div>
+      ))}
     </div>
   }
 }
