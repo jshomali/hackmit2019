@@ -59,7 +59,7 @@ class Npos extends Component {
       });
     }
 
-    
+
 
   }
 
@@ -84,7 +84,7 @@ class Npos extends Component {
     return (
       <div>
         <form onSubmit={this.handleCategorySubmit}>
-          <label>Select a category to filter non-profits: 
+          <label>Select a category to filter non-profits:
             <select value={this.state.category} onChange={this.handleCategorySelection}>
               <option value="all">All</option>
               <option value="Arts, Culture &amp; Humanities">Arts, Culture &amp; Humanities</option>
@@ -116,10 +116,11 @@ class Npos extends Component {
 class Events extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: null, message: null, events_array: [] };
+    this.state = { title: null, message: null, date: null, events_array: [] };
 
     this.handleTitle = this.handleTitle.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
+    this.handleDate = this.handleDate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -158,13 +159,19 @@ class Events extends Component {
     this.setState({message: event.target.value});
   }
 
+  handleDate(event) {
+    this.setState({date: event.target.value});
+  }
+
   handleSubmit(event){
     let db = firestore.firestore();
     db.collection('events').add({
       title: this.state.title,
-      message: this.state.message
+      message: this.state.message,
+      date: this.state.date
     })
     this.fetchEvents();
+    this.resetForm();
     event.preventDefault();
   }
 
@@ -192,13 +199,18 @@ class Events extends Component {
                 <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
             </div>
             <br></br>
+            <div className="form-group">
+                <label htmlFor="date" style={{color: 'red'}}>Date & Time</label>
+                <br></br>
+                <input type="text" className="form-control" id="date" value={this.state.date} onChange={this.handleDate} />
+            </div>
             <br></br>
               <button type="submit" value="Submit" className="btn btn-primary">Submit</button>
           </form>
 
           {this.state.events_array.map(events => (
             <div key={events.title}>
-              <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message}</span></h3>
+              <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message} </span> Starts on {events.date}</h3>
             </div>
           ))}
         </div>
