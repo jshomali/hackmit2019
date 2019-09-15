@@ -250,9 +250,9 @@ class FacebookLogin extends Component {
     let logButton = 4;
 
     if (loggedIn) {
-      logButton = <button onClick={this.logout}>Logout</button>
+      logButton = <button onClick={this.logout} className="fblog">Logout</button>
     } else {
-      logButton = <button onClick={this.login}>Login with Facebook</button>
+      logButton = <button onClick={this.login} className="fblog">Login with Facebook</button>
     }
 
      return (
@@ -274,10 +274,15 @@ render() {
      <div>
      <Tabs>
        <TabList>
-         <Tab>NPOs</Tab>
-         <Tab>Events</Tab>
-         <Tab>Login</Tab>
+        <Tab>Login</Tab>
+        <Tab>NPOs</Tab>
+        <Tab>Events</Tab>
+
        </TabList>
+
+       <TabPanel>
+        <FacebookLogin/>
+       </TabPanel>
 
        <TabPanel>
         <Npos/>
@@ -287,9 +292,7 @@ render() {
         <Events/>
        </TabPanel>
 
-       <TabPanel>
-        <FacebookLogin/>
-       </TabPanel>
+
      </Tabs>
      </div>
     );
