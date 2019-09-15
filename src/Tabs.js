@@ -18,7 +18,9 @@ class Npos extends Component {
   }
 
   componentDidMount() {
-    this.fetchNonProfits("all")
+    if (this.state.non_profit_array.length === 0) {
+      this.fetchNonProfits("all")
+    } 
   }
 
   fetchNonProfits(filter) {
@@ -254,7 +256,7 @@ class FacebookLogin extends Component {
     }
 
      return (
-       <div className='app'>
+       <div style={{textAlign: "center"}}>
         <p>
         {user ? `Hi, ${user.displayName}!` : 'Hi!'}
         </p>
