@@ -7,8 +7,9 @@ import DatePicker from 'react-date-picker';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import firestore from './Firestore';
+import { provider, auth } from './Firestore';
 
-class Content1 extends Component {
+class Npos extends Component {
   constructor(props) {
     super(props);
     this.state = { non_profit_array: [] };
@@ -48,9 +49,22 @@ class Content1 extends Component {
     </div>
   }
 }
-class Content2 extends Component {
+class Events extends Component {
   state = {
     date: new Date(),
+    user: null
+  }
+
+  login = () => {
+    auth().signInWithPopup(provider)
+      .then(({ user }) => {
+        this.setState({ user })
+      })
+  }
+  logout = () => {
+    auth().signOut().then(() => {
+      this.setState({user: null})
+    })
   }
 
   handleSubmit(e){
@@ -112,6 +126,38 @@ class Content2 extends Component {
   }
 }
 
+class Login extends Component {
+  state = {
+    user: null
+  }
+
+  login = () => {
+    auth().signInWithPopup(provider)
+      .then(({ user }) => {
+        this.setState({ user })
+      })
+  }
+  logout = () => {
+    auth().signOut().then(() => {
+      this.setState({user: null})
+    })
+  }
+  render() {
+    const { user } = this.state
+     return (
+       <div className='app'>
+        <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
+        <button onClick={this.login}>
+          Login with Facebook
+        </button>
+        <button onClick={this.logout}>
+          Logout
+        </button>
+      </div>
+      );
+    }
+}
+
 class TabsComp extends Component {
 render() {
    return (
@@ -120,12 +166,19 @@ render() {
        <TabList>
          <Tab>NPOs</Tab>
          <Tab>Events</Tab>
+         <Tab>Login</Tab>
        </TabList>
+
        <TabPanel>
-        <Content1/>
+        <Npos/>
        </TabPanel>
+
        <TabPanel>
-        <Content2/>
+        <Events/>
+       </TabPanel>
+       
+       <TabPanel>
+        <Login/>
        </TabPanel>
      </Tabs>
      </div>
