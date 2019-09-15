@@ -32,8 +32,12 @@
   }
 }
 
+.tab-main {
+  width: 100%;
+  height: 100%;
+}
+
 .form {
-  background-image: linear-gradient(#184b53, white);
   min-height: 610px;
 }
 

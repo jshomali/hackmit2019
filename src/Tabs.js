@@ -3,9 +3,10 @@ import React, {Component} from 'react';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
-import DateTimePicker from 'react-date-picker';
-
-import firestore from "./Firestore"
+import DatePicker from 'react-date-picker';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import "react-tabs/style/react-tabs.css";
+import firestore from './Firestore';
 
 class Content1 extends Component {
   constructor(props) {
@@ -18,15 +19,15 @@ class Content1 extends Component {
   }
 
   fetchNonProfits() {
+
     let db = firestore.firestore();
 
     // Fetch non-profits
     db.collection('non-profits').get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
-          console.log(doc.id, '=>', doc.data()["location"]);
           this.setState({
-            non_profit_array : this.state.non_profit_array.concat(doc.data())
+            non_profit_array : this.state.non_profit_array.concat(doc.data)
           })
         });
       })
@@ -37,12 +38,10 @@ class Content1 extends Component {
   }
 
   render() {
-    console.log(this.state.non_profit_array.length)
     return <div>
       {this.state.non_profit_array.map(npo => (
-        <div key={npo.title}>
-          <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
-          <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
+        <div>
+
         </div>
       ))}
     </div>
@@ -90,21 +89,19 @@ class Content2 extends Component {
           <br></br>
           <form id="contact-form" onSubmit={this.handleSubmit.bind(this)} method="POST">
             <div className="form-group">
-                <label htmlFor="name" style={{color: 'white'}}>Event Title</label>
+                <label for="name" style={{color: 'white'}}>Event Title</label>
                 <br></br>
                 <input type="text" className="form-control" id="name" />
             </div>
             <br></br>
             <div className="form-group">
-                <label htmlFor="exampleInputEmail1" style={{color: 'white'}}>Description</label>
+                <label for="message" style={{color: 'white'}}>Description</label>
                 <br></br>
                 <textarea className="form-control" rows="6" id="message"></textarea>
             </div>
             <br></br>
             <div className="form-group">
-                <label htmlFor="message" style={{color: 'white'}}>Date & Time</label>
-                <br></br>
-                <DateTimePicker onChange={this.onChange} value={this.state.date} />
+
             </div>
             <br></br>
               <button type="submit" className="btn btn-primary">Submit</button>
@@ -118,22 +115,19 @@ class TabsComp extends Component {
 render() {
    return (
      <div>
-	     <CoolTabs
-	       tabKey={'1'}
-	       style={{ width: 1440, height: 782, background:  'white' }}
-	       activeTabStyle={{ background:  'red', color:  'white' }}
-	       unActiveTabStyle={{ background:  'green', color:  'black' }}
-	       activeLeftTabBorderBottomStyle={{ background:  'blue', height:  4 }}
-	       activeRightTabBorderBottomStyle={{ background:  'blue', height:  4 }}
-	       tabsBorderBottomStyle={{ background:  'orange', height:  4 }}
-	       leftContentStyle={{ background:  'lightgreen' }}
-	       rightContentStyle={{ background:  'lightblue' }}
-	       leftTabTitle={'Non Profit Organizations'}
-	       rightTabTitle={'Events'}
-	       leftContent={<Content1/>}
-	       rightContent={<Content2/>}
-	       contentTransitionStyle={'transform 0.6s ease-in'}
-	       borderTransitionStyle={'all 0.6s ease-in'}/>
+     <Tabs>
+       <TabList>
+         <Tab>NPOs</Tab>
+         <Tab>Events</Tab>
+       </TabList>
+        <Content1/>
+       <TabPanel>
+
+       </TabPanel>
+       <TabPanel>
+        <Content2/>
+       </TabPanel>
+     </Tabs>
      </div>
     );
   }
