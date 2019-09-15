@@ -31,3 +31,24 @@
     transform: rotate(360deg);
   }
 }
+
+.form {
+  background-image: linear-gradient(#184b53, white);
+  min-height: 610px;
+}
+
+#contact-form {
+  text-align: center;
+}
+
+.form-group {
+  font-size: 175%;
+}
+
+.form-control {
+  font-size: 100%;
+}
+
+.btn {
+  font-size: 150%;
+}
