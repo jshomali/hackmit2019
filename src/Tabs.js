@@ -274,9 +274,9 @@ render() {
      <div>
      <Tabs>
        <TabList>
-        <Tab>Login</Tab>
-        <Tab>NPOs</Tab>
-        <Tab>Events</Tab>
+        <Tab><span style={{fontFamily: "Lato", fontSize: 24}}>Login</span></Tab>
+        <Tab><span style={{fontFamily: "Lato", fontSize: 24}}>NPOs</span></Tab>
+        <Tab><span style={{fontFamily: "Lato", fontSize: 24}}>Events</span></Tab>
 
        </TabList>
 
