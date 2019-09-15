@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 // import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
-import CoolTabs from 'react-cool-tabs';
-import DatePicker from 'react-date-picker';
+// import CoolTabs from 'react-cool-tabs';
+// import DatePicker from 'react-date-picker';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import firestore from './Firestore';
@@ -12,24 +12,29 @@ import { provider, auth } from './Firestore';
 class Npos extends Component {
   constructor(props) {
     super(props);
-    this.state = { non_profit_array: [] };
+    this.state = { non_profit_array: [], category: '' };
+
+    this.handleCategorySelection = this.handleCategorySelection.bind(this);
+    this.handleCategorySubmit = this.handleCategorySubmit.bind(this);
+    this.fetchNonProfits = this.fetchNonProfits.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchNonProfits()
-  }
+  fetchNonProfits(category) {
 
-  fetchNonProfits() {
+    console.log(category);
 
     let db = firestore.firestore();
 
     // Fetch non-profits
-    db.collection('non-profits').get()
+    db.collection('non-profits').where('category', '==' , category).get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
-          this.setState({
-            non_profit_array : this.state.non_profit_array.concat(doc.data)
-          })
+          if (doc.data()["title"].includes('[email protected]') === false) { // FIXME
+            console.log(doc.data()["title"])
+            this.setState({
+              non_profit_array : this.state.non_profit_array.concat(doc.data())
+            })
+          }
         });
       })
       .catch((err) => {
@@ -38,17 +43,52 @@ class Npos extends Component {
 
   }
 
+  handleCategorySelection(event) {
+    console.log(event.target.value);
+    this.setState({ category: event.target.value });
+  }
+
+  handleCategorySubmit(event) {
+    console.log("hello there");
+    this.fetchNonProfits(event.target.value);
+    event.preventDefault();
+  }
+
   render() {
+    let noElements = false;
+
+    if (this.state.non_profit_array.length === 0) {
+      noElements = true;
+    }
+
     return (
-      <div key={1}>
+      <div>
+        <form onSubmit={this.handleCategorySubmit}>
+          <select value={this.state.category} onChange={this.handleCategorySelection}>
+            <option value="nothing">-- SELECT A CATEGORY TO FILTER --</option>
+            <option value="Arts, Culture &amp; Humanities">Arts, Culture &amp; Humanities</option>
+            <option value="Education">Education</option>
+            <option value="Environment and Animals">Environment and Animals</option>
+            <option value="Health">Health</option>
+            <option value="Human Services">Human Services</option>
+            <option value="International, Foreign Affairs">International, Foreign Affairs</option>
+            <option value="Public, Societal Benefit">Public, Societal Benefit</option>
+            <option value="Religion Related">Religion Related</option>
+            <option value="Mutual/Membership Benefit">Mutual/Membership Benefit</option>
+            <option value="Unknown, Unclassified">Unknown, Unclassified</option>
+          </select>
+          <input type="submit" value="Submit" />
+        </form>
+
+        <p hidden={!noElements}>Please select a category from the drop down menu to display non-profits.</p>
+
         {this.state.non_profit_array.map(npo => (
           <div key={npo.title}>
-            <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
-            <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
+            <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{npo.title} - <span>{npo.location}</span></h3>
           </div>
         ))}
       </div>
-    )
+    );
   }
 }
 class Events extends Component {
@@ -90,13 +130,21 @@ class Events extends Component {
           <br></br>
           <form id="contact-form" onSubmit={this.handleSubmit}>
             <div className="form-group">
+<<<<<<< HEAD
                 <label htmlFor="title" style={{color: 'red'}}>Event Title</label>
+=======
+                <label htmlFor="name" style={{color: 'white'}}>Event Title</label>
+>>>>>>> 04ebd00c0bf2d595e9cac325a9fafe8f10beb3fc
                 <br></br>
                 <input type="text" className="form-control" id="title" value={this.state.title} onChange={this.handleTitle} />
             </div>
             <br></br>
             <div className="form-group">
+<<<<<<< HEAD
                 <label htmlFor="message" style={{color: 'red'}}>Description</label>
+=======
+                <label htmlFor="message" style={{color: 'white'}}>Description</label>
+>>>>>>> 04ebd00c0bf2d595e9cac325a9fafe8f10beb3fc
                 <br></br>
                 <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
             </div>
