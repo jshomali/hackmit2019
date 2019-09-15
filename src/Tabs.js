@@ -52,46 +52,30 @@ class Npos extends Component {
   }
 }
 class Events extends Component {
-  state = {
-    date: new Date(),
-    user: null
+  constructor(props) {
+    super(props);
+    this.state = { title: null, message: null };
+
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  login = () => {
-    auth().signInWithPopup(provider)
-      .then(({ user }) => {
-        this.setState({ user })
-      })
+  handleTitle(event) {
+    this.setState({title: event.target.value});
   }
-  logout = () => {
-    auth().signOut().then(() => {
-      this.setState({user: null})
+
+  handleMessage(event) {
+    this.setState({message: event.target.value});
+  }
+
+  handleSubmit(event){
+    let db = firestore.firestore();
+    db.collection('events').add({
+      title: this.state.title,
+      message: this.state.message
     })
-  }
-
-  handleSubmit(e){
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      // const date = document.getElementById('date').value;
-      const message = document.getElementById('message').value;
-      axios({
-          method: "POST",
-          url:"http://localhost:3002/send",
-          data: {
-              name: name,
-
-              message: message
-          }
-      }).then((response)=>{
-          if (response.data.msg === 'success'){
-              alert("Event has been created.");
-              this.console("GG");
-              this.resetForm()
-          }else if(response.data.msg === 'fail'){
-              alert("Message failed to send.")
-              this.console("RIP")
-          }
-      })
+    event.preventDefault();
   }
 
   resetForm(){
@@ -104,24 +88,21 @@ class Events extends Component {
           <span id="pro-header-2">Create an event.</span>
           <br></br>
           <br></br>
-          <form id="contact-form" onSubmit={this.handleSubmit.bind(this)} method="POST">
+          <form id="contact-form" onSubmit={this.handleSubmit}>
             <div className="form-group">
-                <label for="name" style={{color: 'white'}}>Event Title</label>
+                <label htmlFor="title" style={{color: 'red'}}>Event Title</label>
                 <br></br>
-                <input type="text" className="form-control" id="name" />
+                <input type="text" className="form-control" id="title" value={this.state.title} onChange={this.handleTitle} />
             </div>
             <br></br>
             <div className="form-group">
-                <label for="message" style={{color: 'white'}}>Description</label>
+                <label htmlFor="message" style={{color: 'red'}}>Description</label>
                 <br></br>
-                <textarea className="form-control" rows="6" id="message"></textarea>
+                <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
             </div>
             <br></br>
-            <div className="form-group">
-
-            </div>
             <br></br>
-              <button type="submit" className="btn btn-primary">Submit</button>
+              <button type="submit" value="Submit" className="btn btn-primary">Submit</button>
           </form>
         </div>
       )
@@ -130,33 +111,42 @@ class Events extends Component {
 
 class FacebookLogin extends Component {
   state = {
-    user: null
+    user: null,
+    loggedIn: false
   }
 
   login = () => {
     auth().signInWithPopup(provider)
       .then(({ user }) => {
-        this.setState({ user })
+        this.setState({ user, loggedIn: true })
       })
   }
 
   logout = () => {
     auth().signOut().then(() => {
-      this.setState({user: null})
+      this.setState({user: null, loggedIn: false})
     })
   }
 
   render() {
-    const { user } = this.state
+    const { user } = this.state;
+
+    let logButton = 4;
+
+    if (this.state.loggedIn) {
+      logButton = <button onClick={this.logout}>Logout</button>
+    } else {
+      logButton = <button onClick={this.login}>Login with Facebook</button>
+    }
+
      return (
        <div className='app'>
-        <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
-        <button onClick={this.login}>
-          Login with Facebook
-        </button>
-        <button onClick={this.logout}>
-          Logout
-        </button>
+        <p>
+        {user ? `Hi, ${user.displayName}!` : 'Hi!'}
+        </p>
+
+        {logButton}
+
       </div>
       );
     }
