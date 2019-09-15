@@ -31,11 +31,11 @@ class Npos extends Component {
       db.collection('non-profits').get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
-          if (doc.data()["title"].includes('[email protected]') === false) { // FIXME
-            this.setState({
-              non_profit_array : this.state.non_profit_array.concat(doc.data())
-            })
-          }
+          let dict = doc.data();
+          dict["id"] = doc.id;
+          this.setState({
+            non_profit_array : this.state.non_profit_array.concat(dict)
+          })
         });
       })
       .catch((err) => {
@@ -47,11 +47,11 @@ class Npos extends Component {
       .then((snapshot) => {
         console.log("IN SNAPSHOT " + filter);
         snapshot.forEach((doc) => {
-          if (doc.data()["title"].includes('[email protected]') === false) { // FIXME
-            this.setState({
-              non_profit_array : this.state.non_profit_array.concat(doc.data())
-            })
-          }
+          let dict = doc.data();
+          dict["id"] = doc.id;
+          this.setState({
+            non_profit_array : this.state.non_profit_array.concat(dict)
+          })
         });
       })
       .catch((err) => {
@@ -105,7 +105,7 @@ class Npos extends Component {
         <p hidden={!noElements}>Please select a category from the drop down menu to display non-profits.</p>
 
         {this.state.non_profit_array.map(npo => (
-          <div key={npo.title}>
+          <div key={npo.id}>
             <a href="https://projects.propublica.org/nonprofits/" target="_blank"><h3 style={{paddingLeft: 10, paddingBottom: 20}}>{npo.title} - <span>{npo.location}</span></h3></a>
           </div>
         ))}
