@@ -56,3 +56,11 @@
 .btn {
   font-size: 150%;
 }
+
+.fblog {
+  font-size: 150%;
+  cursor: pointer;
+  background-color: #3b5998;
+  color: white;
+  border-radius: 12px;
+}
