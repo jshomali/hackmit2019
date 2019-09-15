@@ -4,6 +4,8 @@ import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
 import DatePicker from 'react-date-picker';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import "react-tabs/style/react-tabs.css";
 
 class Content1 extends Component {
   constructor(props) {
@@ -46,7 +48,7 @@ class Content1 extends Component {
       this is Content1
       {this.state.non_profit_array.map(npo => (
         <div>
-          
+
         </div>
       ))}
     </div>
@@ -120,22 +122,19 @@ class TabsComp extends Component {
 render() {
    return (
      <div>
-	     <CoolTabs
-	       tabKey={'1'}
-	       style={{ width: 1440, height: 782, background:  'white' }}
-	       activeTabStyle={{ background:  'red', color:  'white' }}
-	       unActiveTabStyle={{ background:  'green', color:  'black' }}
-	       activeLeftTabBorderBottomStyle={{ background:  'blue', height:  4 }}
-	       activeRightTabBorderBottomStyle={{ background:  'yellow', height:  4 }}
-	       tabsBorderBottomStyle={{ background:  'orange', height:  4 }}
-	       leftContentStyle={{ background:  'lightgreen' }}
-	       rightContentStyle={{ background:  'lightblue' }}
-	       leftTabTitle={'Non Profit Organizations'}
-	       rightTabTitle={'Events'}
-	       leftContent={<Content1/>}
-	       rightContent={<Content2/>}
-	       contentTransitionStyle={'transform 0.6s ease-in'}
-	       borderTransitionStyle={'all 0.6s ease-in'}/>
+     <Tabs>
+       <TabList>
+         <Tab>Title 1</Tab>
+         <Tab>Title 2</Tab>
+       </TabList>
+
+       <TabPanel>
+         <Content1/>
+       </TabPanel>
+       <TabPanel>
+         <Content1/>
+       </TabPanel>
+     </Tabs>
      </div>
     );
   }
