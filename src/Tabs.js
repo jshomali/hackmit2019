@@ -39,14 +39,16 @@ class Npos extends Component {
   }
 
   render() {
-    return <div>
-      {this.state.non_profit_array.map(npo => (
-        <div key={npo.title}>
-          <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
-          <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
-        </div>
-      ))}
-    </div>
+    return (
+      <div key={1}>
+        {this.state.non_profit_array.map(npo => (
+          <div key={npo.title}>
+            <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
+            <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
+          </div>
+        ))}
+      </div>
+    )
   }
 }
 class Events extends Component {
