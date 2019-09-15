@@ -12,25 +12,26 @@ import { provider, auth } from './Firestore';
 class Npos extends Component {
   constructor(props) {
     super(props);
-    this.state = { non_profit_array: [], category: '' };
+    this.state = { non_profit_array: [], category: "" };
 
     this.handleCategorySelection = this.handleCategorySelection.bind(this);
     this.handleCategorySubmit = this.handleCategorySubmit.bind(this);
     this.fetchNonProfits = this.fetchNonProfits.bind(this);
   }
 
-  fetchNonProfits(category) {
+  componentDidMount() {
+    this.fetchNonProfits("all")
+  }
 
-    console.log(category);
+  fetchNonProfits(filter) {
 
     let db = firestore.firestore();
 
-    // Fetch non-profits
-    db.collection('non-profits').where('category', '==' , category).get()
+    if (filter === "all") {
+      db.collection('non-profits').get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
           if (doc.data()["title"].includes('[email protected]') === false) { // FIXME
-            console.log(doc.data()["title"])
             this.setState({
               non_profit_array : this.state.non_profit_array.concat(doc.data())
             })
@@ -40,11 +41,30 @@ class Npos extends Component {
       .catch((err) => {
         console.log('Error getting documents', err);
       });
+    } else {
+      // Fetch non-profits
+      db.collection('non-profits').where('category', '==', filter).get()
+      .then((snapshot) => {
+        console.log("IN SNAPSHOT " + filter);
+        snapshot.forEach((doc) => {
+          if (doc.data()["title"].includes('[email protected]') === false) { // FIXME
+            this.setState({
+              non_profit_array : this.state.non_profit_array.concat(doc.data())
+            })
+          }
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+    }
+
+    
 
   }
 
   handleCategorySelection(event) {
-    console.log(event.target.value);
+    console.log("selection " + event.target.value);
     this.setState({ category: event.target.value });
   }
 
@@ -64,27 +84,29 @@ class Npos extends Component {
     return (
       <div>
         <form onSubmit={this.handleCategorySubmit}>
-          <select value={this.state.category} onChange={this.handleCategorySelection}>
-            <option value="nothing">-- SELECT A CATEGORY TO FILTER --</option>
-            <option value="Arts, Culture &amp; Humanities">Arts, Culture &amp; Humanities</option>
-            <option value="Education">Education</option>
-            <option value="Environment and Animals">Environment and Animals</option>
-            <option value="Health">Health</option>
-            <option value="Human Services">Human Services</option>
-            <option value="International, Foreign Affairs">International, Foreign Affairs</option>
-            <option value="Public, Societal Benefit">Public, Societal Benefit</option>
-            <option value="Religion Related">Religion Related</option>
-            <option value="Mutual/Membership Benefit">Mutual/Membership Benefit</option>
-            <option value="Unknown, Unclassified">Unknown, Unclassified</option>
-          </select>
-          <input type="submit" value="Submit" />
+          <label>Select a category to filter non-profits: 
+            <select value={this.state.category} onChange={this.handleCategorySelection}>
+              <option value="all">All</option>
+              <option value="Arts, Culture &amp; Humanities">Arts, Culture &amp; Humanities</option>
+              <option value="Education">Education</option>
+              <option value="Environment and Animals">Environment and Animals</option>
+              <option value="Health">Health</option>
+              <option value="Human Services">Human Services</option>
+              <option value="International, Foreign Affairs">International, Foreign Affairs</option>
+              <option value="Public, Societal Benefit">Public, Societal Benefit</option>
+              <option value="Religion Related">Religion Related</option>
+              <option value="Mutual/Membership Benefit">Mutual/Membership Benefit</option>
+              <option value="Unknown, Unclassified">Unknown, Unclassified</option>
+            </select>
+            <input type="submit" value="Submit" />
+          </label>
         </form>
 
         <p hidden={!noElements}>Please select a category from the drop down menu to display non-profits.</p>
 
         {this.state.non_profit_array.map(npo => (
           <div key={npo.title}>
-            <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{npo.title} - <span>{npo.location}</span></h3>
+            <a href="https://projects.propublica.org/nonprofits/" target="_blank"><h3 style={{paddingLeft: 10, paddingBottom: 20}}>{npo.title} - <span>{npo.location}</span></h3></a>
           </div>
         ))}
       </div>
