@@ -9,6 +9,8 @@ import "react-tabs/style/react-tabs.css";
 import firestore from './Firestore';
 import { provider, auth } from './Firestore';
 
+let loggedIn = false;
+
 class Npos extends Component {
   constructor(props) {
     super(props);
@@ -58,8 +60,6 @@ class Npos extends Component {
         console.log('Error getting documents', err);
       });
     }
-
-
 
   }
 
@@ -122,6 +122,7 @@ class Events extends Component {
     this.handleMessage = this.handleMessage.bind(this);
     this.handleDate = this.handleDate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.resetForm = this.resetForm.bind(this);
   }
 
   componentDidMount() {
@@ -180,39 +181,46 @@ class Events extends Component {
   }
 
   render(){
+    let eventForm;
 
+    if (loggedIn) {
+      eventForm = <div className="col-sm-4 offset-sm-4 form">
+                    <span id="pro-header-2">Create an event.</span>
+                    <br></br>
+                    <br></br>
+                    <form id="contact-form" onSubmit={this.handleSubmit}>
+                      <div className="form-group">
+                          <label htmlFor="title" style={{color: 'red'}}>Event Title</label>
+                          <br></br>
+                          <input type="text" className="form-control" id="title" value={this.state.title} onChange={this.handleTitle} />
+                      </div>
+                      <br></br>
+                      <div className="form-group">
+                          <label htmlFor="message" style={{color: 'red'}}>Description</label>
+                          <br></br>
+                          <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
+                      </div>
+                      <br></br>
+                      <div className="form-group">
+                          <label htmlFor="date" style={{color: 'red'}}>Date & Time</label>
+                          <br></br>
+                          <input type="text" className="form-control" id="date" value={this.state.date} onChange={this.handleDate} />
+                      </div>
+                      <br></br>
+                        <button type="submit" value="Submit" className="btn btn-primary">Submit</button>
+                    </form>
+                  </div>
+    } else {
+      eventForm = <h3>Please log in to create events</h3>
+    }
       return(
-        <div className="col-sm-4 offset-sm-4 form">
-          <span id="pro-header-2">Create an event.</span>
-          <br></br>
-          <br></br>
-          <form id="contact-form" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-                <label htmlFor="title" style={{color: 'red'}}>Event Title</label>
-                <br></br>
-                <input type="text" className="form-control" id="title" value={this.state.title} onChange={this.handleTitle} />
-            </div>
-            <br></br>
-            <div className="form-group">
-                <label htmlFor="message" style={{color: 'red'}}>Description</label>
-                <br></br>
-                <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
-            </div>
-            <br></br>
-            <div className="form-group">
-                <label htmlFor="date" style={{color: 'red'}}>Date & Time</label>
-                <br></br>
-                <input type="text" className="form-control" id="date" value={this.state.date} onChange={this.handleDate} />
-            </div>
-            <br></br>
-              <button type="submit" value="Submit" className="btn btn-primary">Submit</button>
-          </form>
-
-          {this.state.events_array.map(events => (
-            <div key={events.title}>
-              <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message} </span> Starts on {events.date}</h3>
-            </div>
-          ))}
+        <div>
+        {eventForm}
+        {this.state.events_array.map(events => (
+          <div key={events.title}>
+            <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message} </span> Starts on {events.date}</h3>
+          </div>
+        ))}
         </div>
       )
   }
@@ -220,21 +228,22 @@ class Events extends Component {
 
 class FacebookLogin extends Component {
   state = {
-    user: null,
-    loggedIn: false
+    user: null
   }
 
   login = () => {
     auth().signInWithPopup(provider)
       .then(({ user }) => {
-        this.setState({ user, loggedIn: true })
+        this.setState({ user})
       })
+      loggedIn = true;
   }
 
   logout = () => {
     auth().signOut().then(() => {
-      this.setState({user: null, loggedIn: false})
+      this.setState({user: null})
     })
+    loggedIn = false;
   }
 
   render() {
@@ -242,7 +251,7 @@ class FacebookLogin extends Component {
 
     let logButton = 4;
 
-    if (this.state.loggedIn) {
+    if (loggedIn) {
       logButton = <button onClick={this.logout}>Logout</button>
     } else {
       logButton = <button onClick={this.login}>Login with Facebook</button>
@@ -253,47 +262,6 @@ class FacebookLogin extends Component {
         <p>
         {user ? `Hi, ${user.displayName}!` : 'Hi!'}
         </p>
-
-        {logButton}
-
-      </div>
-      );
-    }
-}
-
-class Login extends Component {
-  state = {
-    user: null,
-    loggedIn: false
-  }
-
-  login = () => {
-    auth().signInWithPopup(provider)
-      .then(({ user }) => {
-        this.setState({ user, loggedIn: true })
-      })
-  }
-
-  logout = () => {
-    auth().signOut().then(() => {
-      this.setState({user: null, loggedIn: false})
-    })
-  }
-
-  render() {
-    const { user } = this.state;
-
-    let logButton = 4;
-
-    if (this.state.loggedIn) {
-      logButton = <button onClick={this.logout}>Logout</button>
-    } else {
-      logButton = <button onClick={this.login}>Login with Facebook</button>
-    }
-
-     return (
-       <div className='app'>
-        <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
 
         {logButton}
 
