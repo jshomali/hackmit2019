@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
-import DateTimePicker from 'react-datetime-picker';
+import DatePicker from 'react-date-picker';
 
 import firestore from "./Firestore"
 
@@ -56,22 +56,24 @@ class Content2 extends Component {
   handleSubmit(e){
       e.preventDefault();
       const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
+      // const date = document.getElementById('date').value;
       const message = document.getElementById('message').value;
       axios({
           method: "POST",
           url:"http://localhost:3002/send",
           data: {
               name: name,
-              email: email,
+
               message: message
           }
       }).then((response)=>{
           if (response.data.msg === 'success'){
-              alert("Message has been sent to Julian.");
+              alert("Event has been created.");
+              this.console("GG");
               this.resetForm()
           }else if(response.data.msg === 'fail'){
               alert("Message failed to send.")
+              this.console("RIP")
           }
       })
   }
@@ -133,8 +135,6 @@ render() {
 	       contentTransitionStyle={'transform 0.6s ease-in'}
 	       borderTransitionStyle={'all 0.6s ease-in'}/>
      </div>
-
-
     );
   }
 }
