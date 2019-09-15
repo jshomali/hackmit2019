@@ -6,6 +6,7 @@ import firestore from './Firestore';
 import { provider, auth } from './Firestore';
 
 let loggedIn = false;
+let fbuser = null;
 
 class Npos extends Component {
   constructor(props) {
@@ -20,7 +21,7 @@ class Npos extends Component {
   componentDidMount() {
     if (this.state.non_profit_array.length === 0) {
       this.fetchNonProfits("all")
-    } 
+    }
   }
 
   fetchNonProfits(filter) {
@@ -114,13 +115,15 @@ class Npos extends Component {
 class Events extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: null, message: null, date: null, events_array: [] };
+    this.state = { title: null, message: null, date: null, users: [], events_array: [] };
 
     this.handleTitle = this.handleTitle.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.handleDate = this.handleDate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    // this.handleAttend = this.handleAttend.bind(this);
     this.resetForm = this.resetForm.bind(this);
+
   }
 
   componentDidMount() {
@@ -150,6 +153,8 @@ class Events extends Component {
   }
 
 
+
+
   handleTitle(event) {
     this.setState({title: event.target.value});
   }
@@ -160,6 +165,9 @@ class Events extends Component {
 
   handleDate(event) {
     this.setState({date: event.target.value});
+  }
+  handleUsers(event) {
+    this.setState({users: event.target.value});
   }
 
   handleSubmit(event){
@@ -217,11 +225,41 @@ class Events extends Component {
         {this.state.events_array.map(events => (
           <div key={events.title}>
             <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message} </span> Starts on {events.date}</h3>
+            
           </div>
         ))}
         </div>
       )
   }
+}
+
+class Attend extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      title: this.props.title
+    };
+
+    this.hAttend = this.hAttend.bind(this);
+
+  }
+
+  hAttend(event) {
+    let db = firestore.firestore();
+    // this.setState({users: this.props.users.concat(fbuser)})
+    db.collection('events').doc("users").set({
+      users: this.props.users
+    })
+
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <button onClick={this.hAttend} className="fblog">Attend</button>
+    )
+  }
+
 }
 
 class FacebookLogin extends Component {
@@ -233,6 +271,7 @@ class FacebookLogin extends Component {
     auth().signInWithPopup(provider)
       .then(({ user }) => {
         this.setState({ user})
+        fbuser = user;
       })
       loggedIn = true;
   }
@@ -240,12 +279,14 @@ class FacebookLogin extends Component {
   logout = () => {
     auth().signOut().then(() => {
       this.setState({user: null})
+      fbuser = null;
     })
     loggedIn = false;
   }
 
   render() {
     const { user } = this.state;
+
 
     let logButton = 4;
 
@@ -258,7 +299,7 @@ class FacebookLogin extends Component {
      return (
        <div style={{textAlign: "center"}}>
         <p>
-        {user ? `Hi, ${user.displayName}!` : 'Hi!'}
+        <h1 classname="welcome">{user ? `Hi, ${user.displayName}! You can now create events!` : 'Please log in here!'}</h1>
         </p>
 
         {logButton}

@@ -58,9 +58,13 @@
 }
 
 .fblog {
-  font-size: 150%;
+  font-size: 250%;
   cursor: pointer;
   background-color: #3b5998;
   color: white;
   border-radius: 12px;
+}
+
+.welcome {
+  font-size: 200%;
 }
