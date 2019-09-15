@@ -94,12 +94,39 @@ class Npos extends Component {
 class Events extends Component {
   constructor(props) {
     super(props);
-    this.state = { title: null, message: null };
+    this.state = { title: null, message: null, events_array: [] };
 
     this.handleTitle = this.handleTitle.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
+  componentDidMount() {
+    this.fetchEvents();
+  }
+
+  fetchEvents() {
+    this.setState({events_array: []})
+    console.log();
+
+    let db = firestore.firestore();
+
+    // Fetch Events
+    db.collection('events').get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+            console.log(doc.data()["title"])
+            this.setState({
+              events_array : this.state.events_array.concat(doc.data())
+            })
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+
+  }
+
 
   handleTitle(event) {
     this.setState({title: event.target.value});
@@ -115,6 +142,7 @@ class Events extends Component {
       title: this.state.title,
       message: this.state.message
     })
+    this.fetchEvents();
     event.preventDefault();
   }
 
@@ -123,6 +151,7 @@ class Events extends Component {
   }
 
   render(){
+
       return(
         <div className="col-sm-4 offset-sm-4 form">
           <span id="pro-header-2">Create an event.</span>
@@ -130,21 +159,13 @@ class Events extends Component {
           <br></br>
           <form id="contact-form" onSubmit={this.handleSubmit}>
             <div className="form-group">
-<<<<<<< HEAD
                 <label htmlFor="title" style={{color: 'red'}}>Event Title</label>
-=======
-                <label htmlFor="name" style={{color: 'white'}}>Event Title</label>
->>>>>>> 04ebd00c0bf2d595e9cac325a9fafe8f10beb3fc
                 <br></br>
                 <input type="text" className="form-control" id="title" value={this.state.title} onChange={this.handleTitle} />
             </div>
             <br></br>
             <div className="form-group">
-<<<<<<< HEAD
                 <label htmlFor="message" style={{color: 'red'}}>Description</label>
-=======
-                <label htmlFor="message" style={{color: 'white'}}>Description</label>
->>>>>>> 04ebd00c0bf2d595e9cac325a9fafe8f10beb3fc
                 <br></br>
                 <textarea className="form-control" rows="6" id="message" value={this.state.message} onChange={this.handleMessage}></textarea>
             </div>
@@ -152,6 +173,12 @@ class Events extends Component {
             <br></br>
               <button type="submit" value="Submit" className="btn btn-primary">Submit</button>
           </form>
+
+          {this.state.events_array.map(events => (
+            <div key={events.title}>
+              <h3 style={{paddingLeft: 10, paddingBottom: 20}}>{events.title} - <span>{events.message}</span></h3>
+            </div>
+          ))}
         </div>
       )
   }
