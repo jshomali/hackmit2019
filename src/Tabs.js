@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
-import DatePicker from 'react-date-picker';
+import DateTimePicker from 'react-date-picker';
 
 import firestore from "./Firestore"
 
