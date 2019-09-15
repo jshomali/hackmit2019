@@ -1,9 +1,5 @@
 import React, {Component} from 'react';
-// import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
-import axios from 'axios';
-// import CoolTabs from 'react-cool-tabs';
-// import DatePicker from 'react-date-picker';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
 import firestore from './Firestore';
@@ -83,7 +79,7 @@ class Npos extends Component {
 
     return (
       <div>
-        <form onSubmit={this.handleCategorySubmit}>
+        {/* <form onSubmit={this.handleCategorySubmit}>
           <label>Select a category to filter non-profits:
             <select value={this.state.category} onChange={this.handleCategorySelection}>
               <option value="all">All</option>
@@ -100,9 +96,9 @@ class Npos extends Component {
             </select>
             <input type="submit" value="Submit" />
           </label>
-        </form>
+        </form> */}
 
-        <p hidden={!noElements}>Please select a category from the drop down menu to display non-profits.</p>
+        <p hidden={!noElements}>Loading...</p>
 
         {this.state.non_profit_array.map(npo => (
           <div key={npo.id}>
