@@ -3,9 +3,15 @@ import React, {Component} from 'react';
 import "react-tabs/style/react-tabs.css";
 import axios from 'axios';
 import CoolTabs from 'react-cool-tabs';
+<<<<<<< HEAD
 import DatePicker from 'react-date-picker';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import "react-tabs/style/react-tabs.css";
+=======
+import DateTimePicker from 'react-date-picker';
+
+import firestore from "./Firestore"
+>>>>>>> 899956abd26b3864634bcfbf5e25166df4e8f3ad
 
 class Content1 extends Component {
   constructor(props) {
@@ -18,22 +24,15 @@ class Content1 extends Component {
   }
 
   fetchNonProfits() {
-    const admin = require('firebase-admin');
-
-    let serviceAccount = require('./hackmit2019-46f4a5a0417f.json');
-
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
-    });
-
-    let db = admin.firestore();
+    let db = firestore.firestore();
 
     // Fetch non-profits
     db.collection('non-profits').get()
       .then((snapshot) => {
         snapshot.forEach((doc) => {
+          console.log(doc.id, '=>', doc.data()["location"]);
           this.setState({
-            non_profit_array : this.state.non_profit_array.concat(doc.data)
+            non_profit_array : this.state.non_profit_array.concat(doc.data())
           })
         });
       })
@@ -44,11 +43,17 @@ class Content1 extends Component {
   }
 
   render() {
+    console.log(this.state.non_profit_array.length)
     return <div>
-      this is Content1
       {this.state.non_profit_array.map(npo => (
+<<<<<<< HEAD
         <div>
 
+=======
+        <div key={npo.title}>
+          <h3 style={{paddingLeft: 10}}>{npo.title}</h3>
+          <h4 style={{paddingLeft: 20}}>{npo.location}</h4>
+>>>>>>> 899956abd26b3864634bcfbf5e25166df4e8f3ad
         </div>
       ))}
     </div>
@@ -96,19 +101,21 @@ class Content2 extends Component {
           <br></br>
           <form id="contact-form" onSubmit={this.handleSubmit.bind(this)} method="POST">
             <div className="form-group">
-                <label for="name" style={{color: 'white'}}>Event Title</label>
+                <label htmlFor="name" style={{color: 'white'}}>Event Title</label>
                 <br></br>
                 <input type="text" className="form-control" id="name" />
             </div>
             <br></br>
             <div className="form-group">
-                <label for="message" style={{color: 'white'}}>Description</label>
+                <label htmlFor="exampleInputEmail1" style={{color: 'white'}}>Description</label>
                 <br></br>
                 <textarea className="form-control" rows="6" id="message"></textarea>
             </div>
             <br></br>
             <div className="form-group">
-
+                <label htmlFor="message" style={{color: 'white'}}>Date & Time</label>
+                <br></br>
+                <DateTimePicker onChange={this.onChange} value={this.state.date} />
             </div>
             <br></br>
               <button type="submit" className="btn btn-primary">Submit</button>
@@ -122,6 +129,7 @@ class TabsComp extends Component {
 render() {
    return (
      <div>
+<<<<<<< HEAD
      <Tabs>
        <TabList>
          <Tab>Title 1</Tab>
@@ -135,6 +143,24 @@ render() {
          <Content1/>
        </TabPanel>
      </Tabs>
+=======
+	     <CoolTabs
+	       tabKey={'1'}
+	       style={{ width: 1440, height: 782, background:  'white' }}
+	       activeTabStyle={{ background:  'red', color:  'white' }}
+	       unActiveTabStyle={{ background:  'green', color:  'black' }}
+	       activeLeftTabBorderBottomStyle={{ background:  'blue', height:  4 }}
+	       activeRightTabBorderBottomStyle={{ background:  'blue', height:  4 }}
+	       tabsBorderBottomStyle={{ background:  'orange', height:  4 }}
+	       leftContentStyle={{ background:  'lightgreen' }}
+	       rightContentStyle={{ background:  'lightblue' }}
+	       leftTabTitle={'Non Profit Organizations'}
+	       rightTabTitle={'Events'}
+	       leftContent={<Content1/>}
+	       rightContent={<Content2/>}
+	       contentTransitionStyle={'transform 0.6s ease-in'}
+	       borderTransitionStyle={'all 0.6s ease-in'}/>
+>>>>>>> 899956abd26b3864634bcfbf5e25166df4e8f3ad
      </div>
     );
   }
