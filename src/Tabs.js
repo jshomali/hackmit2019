@@ -128,6 +128,40 @@ class Events extends Component {
   }
 }
 
+class FacebookLogin extends Component {
+  state = {
+    user: null
+  }
+
+  login = () => {
+    auth().signInWithPopup(provider)
+      .then(({ user }) => {
+        this.setState({ user })
+      })
+  }
+
+  logout = () => {
+    auth().signOut().then(() => {
+      this.setState({user: null})
+    })
+  }
+
+  render() {
+    const { user } = this.state
+     return (
+       <div className='app'>
+        <p>{user ? `Hi, ${user.displayName}!` : 'Hi!'}</p>
+        <button onClick={this.login}>
+          Login with Facebook
+        </button>
+        <button onClick={this.logout}>
+          Logout
+        </button>
+      </div>
+      );
+    }
+}
+
 class Login extends Component {
   state = {
     user: null,
@@ -140,11 +174,13 @@ class Login extends Component {
         this.setState({ user, loggedIn: true })
       })
   }
+
   logout = () => {
     auth().signOut().then(() => {
       this.setState({user: null, loggedIn: false})
     })
   }
+
   render() {
     const { user } = this.state;
 
@@ -185,9 +221,9 @@ render() {
        <TabPanel>
         <Events/>
        </TabPanel>
-       
+
        <TabPanel>
-        <Login/>
+        <FacebookLogin/>
        </TabPanel>
      </Tabs>
      </div>
