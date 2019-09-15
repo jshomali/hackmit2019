@@ -12,4 +12,5 @@ for i in jsonData:
     npo_ref.add({
         u'title': i['title'],
         u'location': i['location'],
+        u'category': i['category']
     })

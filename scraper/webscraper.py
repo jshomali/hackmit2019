@@ -26,12 +26,27 @@ responses.append(requests.get(religion_url))
 responses.append(requests.get(membership_benefit_url))
 responses.append(requests.get(unknown_url))
 
-for response in responses:
-    content = BeautifulSoup(response.content, "html.parser")
+categories = []
+
+categories.append("Arts, Culture & Humanities")
+categories.append("Education")
+categories.append("Environment and Animals")
+categories.append("Health")
+categories.append("Human Services")
+categories.append("International, Foreign Affairs")
+categories.append("Public, Societal Benefit")
+categories.append("Religion Related")
+categories.append("Mutual/Membership Benefit")
+categories.append("Unknown, Unclassified")
+
+cat_counter = 0
+
+npo_list = []
+
+for res in responses:
+    content = BeautifulSoup(res.content, "html.parser")
 
     counter = 0
-
-    npo_list = []
 
     all_tds = content.findAll('td')
 
@@ -39,9 +54,12 @@ for response in responses:
         if len(t_d.text.splitlines()) == 3 and t_d.text.splitlines()[1].lstrip()[0] != '$':
             non_profit_object = {
                 "title": all_tds[index - 1].find('a').text,
-                "location": t_d.text.splitlines()[1].lstrip()
+                "location": t_d.text.splitlines()[1].lstrip(),
+                "category": categories[cat_counter]
             }
             npo_list.append(non_profit_object)
 
     with open('scraper/npo_data.json', 'w') as outfile:
         json.dump(npo_list, outfile)
+
+    cat_counter += 1
